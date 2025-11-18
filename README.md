@@ -19,13 +19,13 @@ Experience the platform live! Currently featuring a fully playable Pong game wit
 - 📊 **Statistics** - Detailed game statistics and play history
 
 ### Games (7 Total)
-- ✅ **Pong** - Classic arcade paddle game (PLAYABLE)
-- 🚧 **Connect 4** - Strategic two-player game (Coming Soon)
+- ✅ **Pong** - Classic arcade paddle game **(PLAYABLE)**
+- ✅ **Connect 4** - Strategic two-player game with AI **(PLAYABLE)**
+- ✅ **Tetris** - Classic block-stacking puzzle **(PLAYABLE)**
 - 🚧 **Battleships** - Naval combat strategy (Coming Soon)
 - 🚧 **Solitaire** - Classic Klondike (Coming Soon)
 - 🚧 **Spider Solitaire** - Advanced solitaire variant (Coming Soon)
 - 🚧 **Hill Climb Racing** - Physics-based driving (Coming Soon)
-- 🚧 **Tetris** - Classic block-stacking puzzle (Coming Soon)
 
 ## 🚀 Tech Stack
 
