@@ -1,0 +1,54 @@
+/**
+ * Hill Climb Racing configuration
+ */
+
+export const HILLCLIMB_CONFIG = {
+  // Canvas
+  CANVAS_WIDTH: 800,
+  CANVAS_HEIGHT: 600,
+  FPS: 60,
+
+  // Physics
+  GRAVITY: 980, // pixels per second squared
+  GROUND_FRICTION: 0.95,
+  AIR_FRICTION: 0.99,
+
+  // Vehicle
+  VEHICLE_WIDTH: 60,
+  VEHICLE_HEIGHT: 30,
+  WHEEL_RADIUS: 15,
+  WHEELBASE: 50,
+  VEHICLE_MASS: 100,
+
+  // Controls
+  ENGINE_POWER: 800,
+  BRAKE_POWER: 600,
+  MAX_SPEED: 400,
+
+  // Fuel
+  INITIAL_FUEL: 100,
+  FUEL_CONSUMPTION: 0.5, // per second when accelerating
+  FUEL_PICKUP_AMOUNT: 50,
+
+  // Terrain
+  TERRAIN_SEGMENT_LENGTH: 50,
+  TERRAIN_POINTS: 200,
+  TERRAIN_MIN_HEIGHT: 300,
+  TERRAIN_MAX_HEIGHT: 500,
+  TERRAIN_SMOOTHNESS: 0.3,
+
+  // Scoring
+  SCORE_PER_METER: 1,
+}
+
+export const COLORS = {
+  SKY: '#87CEEB',
+  GROUND: '#8B4513',
+  GRASS: '#228B22',
+  VEHICLE_BODY: '#FF4444',
+  VEHICLE_WINDOW: '#444444',
+  WHEEL: '#333333',
+  FUEL_BAR: '#FFD700',
+  FUEL_BG: '#333333',
+  UI_TEXT: '#FFFFFF',
+}
