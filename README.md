@@ -8,6 +8,8 @@ A modern, web-based game platform built with the latest technologies, featuring 
 
 Experience the platform live! Currently featuring a fully playable Pong game with more games coming soon.
 
+**📱 Mobile App Available!** Check out the [mobile/](mobile/) directory for the React Native mobile app supporting iOS and Android.
+
 ## ✨ Features
 
 ### Platform Features
@@ -31,6 +33,7 @@ Experience the platform live! Currently featuring a fully playable Pong game wit
 
 Built with cutting-edge 2025 technologies:
 
+### Web Platform
 - **React 19** - Latest React with improved performance
 - **TypeScript 5.x** - Full type safety
 - **Vite 6** - Lightning-fast build tool (5x faster builds, 100x faster HMR)
@@ -38,6 +41,14 @@ Built with cutting-edge 2025 technologies:
 - **Zustand** - Lightweight state management
 - **React Router v7** - Client-side routing
 - **HTML5 Canvas** - Native game rendering
+- **Firebase** - Authentication and cloud database
+
+### Mobile App (React Native)
+- **React Native** with **Expo** - Cross-platform mobile development
+- **React Navigation 7** - Mobile navigation
+- **Zustand** - Shared state management with web
+- **Firebase** - Authentication and Firestore sync
+- **react-native-canvas** - Game rendering on mobile
 
 ## 📋 Prerequisites
 
@@ -80,32 +91,45 @@ npm run type-check   # TypeScript type checking
 
 ```
 frov/
-├── src/
+├── src/                   # Web platform source
 │   ├── platform/          # Platform features
 │   │   ├── components/    # UI components
 │   │   ├── pages/         # Page components
-│   │   ├── store/         # State management
-│   │   └── services/      # Business logic
+│   │   ├── store/         # State management (shared with mobile)
+│   │   └── services/      # Business logic (shared with mobile)
 │   │
 │   ├── games/             # Game implementations
 │   │   ├── pong/          # ✅ Complete
-│   │   ├── connect4/      # 🚧 Coming soon
-│   │   ├── battleships/   # 🚧 Coming soon
-│   │   ├── solitaire/     # 🚧 Coming soon
-│   │   ├── spider-solitaire/  # 🚧 Coming soon
-│   │   ├── hill-climb-racing/ # 🚧 Coming soon
-│   │   └── tetris/        # 🚧 Coming soon
+│   │   ├── connect4/      # ✅ Complete
+│   │   ├── tetris/        # ✅ Complete
+│   │   ├── battleships/   # ✅ Complete
+│   │   ├── solitaire/     # ✅ Complete
+│   │   ├── spider-solitaire/  # ✅ Complete
+│   │   ├── hill-climb-racing/ # ✅ Complete
+│   │   └── fireboy-watergirl/ # ✅ Multiplayer
 │   │
 │   ├── shared/            # Shared utilities
 │   │   ├── components/    # Common components
 │   │   ├── hooks/         # Custom React hooks
 │   │   ├── utils/         # Helper functions
 │   │   ├── types/         # TypeScript types
+│   │   ├── services/      # Firebase integration (shared)
 │   │   └── game-engine/   # Base game engine
 │   │
 │   ├── App.tsx
 │   ├── main.tsx
 │   └── index.css
+│
+├── mobile/                # 📱 React Native mobile app
+│   ├── src/
+│   │   ├── screens/       # Mobile screens
+│   │   ├── navigation/    # React Navigation
+│   │   ├── games/         # Mobile-optimized games
+│   │   └── config/        # Firebase config
+│   ├── App.tsx
+│   ├── package.json
+│   ├── README.md          # Mobile setup guide
+│   └── QUICKSTART.md      # Quick start guide
 │
 ├── docs/                  # Documentation
 ├── public/                # Static assets
@@ -219,12 +243,13 @@ Strict mode enabled with path aliases:
 - [ ] Social features
 - [ ] Sound effects and music
 
-### Phase 4: Advanced Features 🔮
-- [ ] PWA support for offline play
-- [ ] Multiplayer (WebSockets)
+### Phase 4: Advanced Features ✅
+- [x] PWA support for offline play
+- [x] Multiplayer (WebRTC)
+- [x] Mobile app (React Native) - **Available Now!**
+- [x] Firebase backend integration
 - [ ] Tournament mode
-- [ ] Mobile app (React Native)
-- [ ] Backend API integration
+- [ ] Advanced analytics
 
 ## 🤝 Contributing
 
