@@ -9,6 +9,7 @@ import { useUserStore } from '@platform/store/userStore'
 
 // Import games
 import { PongGame } from '@games/pong/PongGame'
+import { Connect4Game } from '@games/connect4/Connect4Game'
 
 export const GamePage = () => {
   const { gameId } = useParams<{ gameId: string }>()
@@ -43,7 +44,7 @@ export const GamePage = () => {
       case 'pong':
         return <PongGame />
       case 'connect4':
-        return <div className="text-center py-20">Connect 4 - Coming Soon!</div>
+        return <Connect4Game />
       case 'battleships':
         return <div className="text-center py-20">Battleships - Coming Soon!</div>
       case 'solitaire':
