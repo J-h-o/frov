@@ -2,6 +2,12 @@
 
 A modern, web-based game platform built with the latest technologies, featuring classic games with a clean, intuitive interface.
 
+## 🎯 Live Demo
+
+**🌐 [Play Now on GitHub Pages](https://j-h-o.github.io/frov/)**
+
+Experience the platform live! Currently featuring a fully playable Pong game with more games coming soon.
+
 ## ✨ Features
 
 ### Platform Features
@@ -42,7 +48,7 @@ Built with cutting-edge 2025 technologies:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/frov.git
+git clone https://github.com/J-h-o/frov.git
 cd frov
 
 # Install dependencies
