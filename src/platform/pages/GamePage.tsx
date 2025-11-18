@@ -11,6 +11,7 @@ import { useUserStore } from '@platform/store/userStore'
 import { PongGame } from '@games/pong/PongGame'
 import { Connect4Game } from '@games/connect4/Connect4Game'
 import { TetrisGame } from '@games/tetris/TetrisGame'
+import { FireboyWatergirlGame } from '@games/fireboy-watergirl/FireboyWatergirlGame'
 
 export const GamePage = () => {
   const { gameId } = useParams<{ gameId: string }>()
@@ -57,6 +58,8 @@ export const GamePage = () => {
         return <div className="text-center py-20">Hill Climb Racing - Coming Soon!</div>
       case 'tetris':
         return <TetrisGame />
+      case 'fireboy-watergirl':
+        return <FireboyWatergirlGame />
       default:
         return <div className="text-center py-20">Game not implemented yet</div>
     }

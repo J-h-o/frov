@@ -90,6 +90,18 @@ export const GAMES: Game[] = [
     featured: true,
     releaseDate: '2025-11-18',
   },
+  {
+    id: 'fireboy-watergirl',
+    name: 'Fireboy & Watergirl',
+    description: 'Multiplayer cooperative platformer. Work together to solve puzzles and reach the doors! Uses WebRTC for peer-to-peer play.',
+    thumbnail: '/games/fireboy-watergirl.png',
+    category: 'puzzle',
+    difficulty: 'medium',
+    totalPlays: 0,
+    averageRating: 0,
+    featured: true,
+    releaseDate: '2025-11-18',
+  },
 ]
 
 export const getGameById = (id: string): Game | undefined => {
