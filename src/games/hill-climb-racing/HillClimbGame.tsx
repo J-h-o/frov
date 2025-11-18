@@ -8,7 +8,7 @@ import { useCanvas } from '@shared/hooks/useCanvas'
 import { useUserStore } from '@platform/store/userStore'
 import { useGameStore } from '@platform/store/gameStore'
 import { HILLCLIMB_CONFIG, COLORS } from './config'
-import type { HillClimbState, Vehicle } from './types'
+import type { HillClimbState } from './types'
 import { createInitialState, updatePhysics, handleKeyDown, handleKeyUp } from './gameLogic'
 
 export const HillClimbGame = () => {
@@ -16,6 +16,7 @@ export const HillClimbGame = () => {
   const { user, updateStats } = useUserStore()
   const { addScore } = useGameStore()
   const [gameState, setGameState] = useState<HillClimbState>(createInitialState())
+  const gameStateRef = useRef<HillClimbState>(gameState)
   const lastUpdateRef = useRef<number>(0)
   const animationFrameRef = useRef<number>(0)
 
@@ -28,19 +29,33 @@ export const HillClimbGame = () => {
     height: canvasHeight,
   })
 
-  // Draw terrain
-  const drawTerrain = (ctx: CanvasRenderingContext2D, cameraX: number) => {
-    const { terrain } = gameState
+  // Update ref when state changes
+  useEffect(() => {
+    gameStateRef.current = gameState
+  }, [gameState])
 
+  // Render function using ref
+  const render = useCallback(() => {
+    if (!context) return
+
+    const state = gameStateRef.current
+    const { ctx, width, height } = context
+
+    // Clear canvas with sky
+    ctx.fillStyle = COLORS.SKY
+    ctx.fillRect(0, 0, width, height)
+
+    // Draw terrain
+    const { terrain } = state
     ctx.fillStyle = COLORS.GRASS
     ctx.beginPath()
-    ctx.moveTo(-cameraX, HILLCLIMB_CONFIG.CANVAS_HEIGHT)
+    ctx.moveTo(-state.cameraX, HILLCLIMB_CONFIG.CANVAS_HEIGHT)
 
     for (const point of terrain.points) {
-      ctx.lineTo(point.x - cameraX, point.y)
+      ctx.lineTo(point.x - state.cameraX, point.y)
     }
 
-    ctx.lineTo(terrain.points[terrain.points.length - 1].x - cameraX, HILLCLIMB_CONFIG.CANVAS_HEIGHT)
+    ctx.lineTo(terrain.points[terrain.points.length - 1].x - state.cameraX, HILLCLIMB_CONFIG.CANVAS_HEIGHT)
     ctx.closePath()
     ctx.fill()
 
@@ -51,17 +66,16 @@ export const HillClimbGame = () => {
     for (let i = 0; i < terrain.points.length; i++) {
       const point = terrain.points[i]
       if (i === 0) {
-        ctx.moveTo(point.x - cameraX, point.y)
+        ctx.moveTo(point.x - state.cameraX, point.y)
       } else {
-        ctx.lineTo(point.x - cameraX, point.y)
+        ctx.lineTo(point.x - state.cameraX, point.y)
       }
     }
     ctx.stroke()
-  }
 
-  // Draw vehicle
-  const drawVehicle = (ctx: CanvasRenderingContext2D, vehicle: Vehicle, cameraX: number) => {
-    const x = vehicle.position.x - cameraX
+    // Draw vehicle
+    const vehicle = state.vehicle
+    const x = vehicle.position.x - state.cameraX
     const y = vehicle.position.y
 
     ctx.save()
@@ -92,7 +106,7 @@ export const HillClimbGame = () => {
     const drawWheel = (wheelX: number, wheelY: number) => {
       ctx.fillStyle = COLORS.WHEEL
       ctx.beginPath()
-      ctx.arc(wheelX - cameraX, wheelY, HILLCLIMB_CONFIG.WHEEL_RADIUS, 0, Math.PI * 2)
+      ctx.arc(wheelX - state.cameraX, wheelY, HILLCLIMB_CONFIG.WHEEL_RADIUS, 0, Math.PI * 2)
       ctx.fill()
       ctx.strokeStyle = '#666'
       ctx.lineWidth = 2
@@ -101,23 +115,6 @@ export const HillClimbGame = () => {
 
     drawWheel(vehicle.rearWheel.position.x, vehicle.rearWheel.position.y)
     drawWheel(vehicle.frontWheel.position.x, vehicle.frontWheel.position.y)
-  }
-
-  // Render function
-  const render = useCallback(() => {
-    if (!context) return
-
-    const { ctx, width, height } = context
-
-    // Clear canvas with sky
-    ctx.fillStyle = COLORS.SKY
-    ctx.fillRect(0, 0, width, height)
-
-    // Draw terrain
-    drawTerrain(ctx, gameState.cameraX)
-
-    // Draw vehicle
-    drawVehicle(ctx, gameState.vehicle, gameState.cameraX)
 
     // Draw UI
     const padding = 20
@@ -128,7 +125,7 @@ export const HillClimbGame = () => {
     ctx.fillStyle = COLORS.FUEL_BG
     ctx.fillRect(padding, padding, fuelBarWidth, fuelBarHeight)
     ctx.fillStyle = COLORS.FUEL_BAR
-    const fuelWidth = (gameState.fuel / HILLCLIMB_CONFIG.INITIAL_FUEL) * fuelBarWidth
+    const fuelWidth = (state.fuel / HILLCLIMB_CONFIG.INITIAL_FUEL) * fuelBarWidth
     ctx.fillRect(padding, padding, fuelWidth, fuelBarHeight)
     ctx.strokeStyle = '#000'
     ctx.lineWidth = 2
@@ -137,15 +134,17 @@ export const HillClimbGame = () => {
     // Text
     ctx.fillStyle = COLORS.UI_TEXT
     ctx.font = 'bold 16px Arial'
-    ctx.fillText(`Fuel: ${Math.round(gameState.fuel)}%`, padding, padding + 35)
-    ctx.fillText(`Distance: ${Math.round(gameState.distance)}m`, padding, padding + 55)
-    ctx.fillText(`Score: ${gameState.score}`, padding, padding + 75)
-  }, [context, gameState])
+    ctx.fillText(`Fuel: ${Math.round(state.fuel)}%`, padding, padding + 35)
+    ctx.fillText(`Distance: ${Math.round(state.distance)}m`, padding, padding + 55)
+    ctx.fillText(`Score: ${state.score}`, padding, padding + 75)
+  }, [context])
 
   // Game loop
   const gameLoop = useCallback(
     (timestamp: number) => {
-      if (!gameState.isPlaying || gameState.isPaused) {
+      const state = gameStateRef.current
+
+      if (!state.isPlaying || state.isPaused) {
         animationFrameRef.current = requestAnimationFrame(gameLoop)
         return
       }
@@ -170,7 +169,7 @@ export const HillClimbGame = () => {
       render()
       animationFrameRef.current = requestAnimationFrame(gameLoop)
     },
-    [gameState.isPlaying, gameState.isPaused, render, user, updateStats, addScore]
+    [render, user, updateStats, addScore]
   )
 
   // Start game loop
@@ -233,8 +232,10 @@ export const HillClimbGame = () => {
 
   // Initial render
   useEffect(() => {
-    render()
-  }, [render])
+    if (context) {
+      render()
+    }
+  }, [context, render])
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 py-8">
