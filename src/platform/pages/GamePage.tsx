@@ -11,6 +11,7 @@ import { useUserStore } from '@platform/store/userStore'
 import { PongGame } from '@games/pong/PongGame'
 import { Connect4Game } from '@games/connect4/Connect4Game'
 import { TetrisGame } from '@games/tetris/TetrisGame'
+import { FireboyWatergirlGame } from '@games/fireboy-watergirl/FireboyWatergirlGame'
 import { SolitaireGame } from '@games/solitaire/SolitaireGame'
 import { BattleshipsGame } from '@games/battleships/BattleshipsGame'
 import { SpiderSolitaireGame } from '@games/spider-solitaire/SpiderSolitaireGame'
@@ -61,6 +62,8 @@ export const GamePage = () => {
         return <HillClimbGame />
       case 'tetris':
         return <TetrisGame />
+      case 'fireboy-watergirl':
+        return <FireboyWatergirlGame />
       default:
         return <div className="text-center py-20">Game not implemented yet</div>
     }
