@@ -10,6 +10,7 @@ import { useUserStore } from '@platform/store/userStore'
 // Import games
 import { PongGame } from '@games/pong/PongGame'
 import { Connect4Game } from '@games/connect4/Connect4Game'
+import { TetrisGame } from '@games/tetris/TetrisGame'
 
 export const GamePage = () => {
   const { gameId } = useParams<{ gameId: string }>()
@@ -20,10 +21,11 @@ export const GamePage = () => {
   const game = gameId ? getGameById(gameId) : null
 
   useEffect(() => {
-    if (game) {
-      updateGamePlays(game.id)
+    if (gameId) {
+      updateGamePlays(gameId)
     }
-  }, [game, updateGamePlays])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameId]) // Only run when gameId changes, not when game object updates
 
   if (!game) {
     return (
@@ -54,7 +56,7 @@ export const GamePage = () => {
       case 'hill-climb-racing':
         return <div className="text-center py-20">Hill Climb Racing - Coming Soon!</div>
       case 'tetris':
-        return <div className="text-center py-20">Tetris - Coming Soon!</div>
+        return <TetrisGame />
       default:
         return <div className="text-center py-20">Game not implemented yet</div>
     }
