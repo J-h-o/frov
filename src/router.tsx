@@ -10,27 +10,32 @@ import { Leaderboard } from '@platform/pages/Leaderboard'
 import { GamePage } from '@platform/pages/GamePage'
 import { Layout } from './Layout'
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: 'profile',
+          element: <Profile />,
+        },
+        {
+          path: 'leaderboard',
+          element: <Leaderboard />,
+        },
+        {
+          path: 'game/:gameId',
+          element: <GamePage />,
+        },
+      ],
+    },
+  ],
   {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: 'profile',
-        element: <Profile />,
-      },
-      {
-        path: 'leaderboard',
-        element: <Leaderboard />,
-      },
-      {
-        path: 'game/:gameId',
-        element: <GamePage />,
-      },
-    ],
-  },
-])
+    basename: import.meta.env.BASE_URL, // Use Vite's BASE_URL for GitHub Pages compatibility
+  }
+)
