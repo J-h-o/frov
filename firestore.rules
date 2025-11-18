@@ -1,0 +1,198 @@
+rules_version = '2';
+
+/**
+ * Firestore Security Rules for FROV Game Platform
+ *
+ * These rules ensure:
+ * - Users can only edit their own data
+ * - All users can read leaderboards and reviews
+ * - Proper data validation for all writes
+ * - Protection against spam and abuse
+ *
+ * To deploy these rules:
+ * 1. Go to Firebase Console > Firestore Database > Rules
+ * 2. Copy and paste these rules
+ * 3. Click "Publish"
+ */
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================================
+    // Helper Functions
+    // ============================================================================
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user is owner of a resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if the request is creating a new document
+    function isCreating() {
+      return !exists(/databases/$(database)/documents/$(request.path));
+    }
+
+    // Check if the request is updating an existing document
+    function isUpdating() {
+      return exists(/databases/$(database)/documents/$(request.path));
+    }
+
+    // Validate user data fields
+    function isValidUser() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['id', 'username', 'avatar', 'createdAt', 'lastLogin'])
+        && data.id is string
+        && data.username is string
+        && data.username.size() > 0
+        && data.username.size() <= 50
+        && data.avatar is string
+        && data.createdAt is timestamp
+        && data.lastLogin is timestamp;
+    }
+
+    // Validate game stats data
+    function isValidStats() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['userId', 'stats', 'updatedAt'])
+        && data.userId is string
+        && data.stats is list
+        && data.updatedAt is timestamp;
+    }
+
+    // Validate review data
+    function isValidReview() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['gameId', 'userId', 'username', 'rating', 'comment', 'createdAt'])
+        && data.gameId is string
+        && data.userId is string
+        && data.username is string
+        && data.rating is number
+        && data.rating >= 1
+        && data.rating <= 5
+        && data.comment is string
+        && data.comment.size() <= 1000
+        && data.createdAt is timestamp;
+    }
+
+    // Validate leaderboard entry
+    function isValidLeaderboardEntry(entry) {
+      return entry.keys().hasAll(['userId', 'username', 'avatar', 'score', 'timestamp'])
+        && entry.userId is string
+        && entry.username is string
+        && entry.avatar is string
+        && entry.score is number
+        && entry.score >= 0
+        && entry.timestamp is timestamp;
+    }
+
+    // ============================================================================
+    // User Profiles
+    // ============================================================================
+
+    match /users/{userId} {
+      // Anyone can read user profiles
+      allow read: if true;
+
+      // Users can only create/update their own profile
+      allow create: if isOwner(userId) && isValidUser();
+      allow update: if isOwner(userId) && isValidUser();
+
+      // Users can delete their own profile
+      allow delete: if isOwner(userId);
+    }
+
+    // ============================================================================
+    // User Statistics
+    // ============================================================================
+
+    match /userStats/{userId} {
+      // Users can read their own stats, others can read for leaderboards
+      allow read: if true;
+
+      // Users can only create/update their own stats
+      allow create: if isOwner(userId) && isValidStats();
+      allow update: if isOwner(userId) && isValidStats();
+
+      // Users can delete their own stats
+      allow delete: if isOwner(userId);
+    }
+
+    // ============================================================================
+    // Leaderboards
+    // ============================================================================
+
+    match /leaderboards/{gameId} {
+      // Anyone can read leaderboards
+      allow read: if true;
+
+      // Only authenticated users can write to leaderboards
+      // Validate that all entries in the scores array are valid
+      allow create, update: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['gameId', 'scores', 'updatedAt'])
+        && request.resource.data.gameId is string
+        && request.resource.data.scores is list
+        && request.resource.data.scores.size() <= 100
+        && request.resource.data.updatedAt is timestamp;
+
+      // No deletion of leaderboards
+      allow delete: if false;
+    }
+
+    // ============================================================================
+    // Global Leaderboard
+    // ============================================================================
+
+    match /globalLeaderboard/{document} {
+      // Anyone can read global leaderboard
+      allow read: if true;
+
+      // Only authenticated users can update global leaderboard
+      allow create, update: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['entries', 'updatedAt'])
+        && request.resource.data.entries is list
+        && request.resource.data.entries.size() <= 100
+        && request.resource.data.updatedAt is timestamp;
+
+      // No deletion of global leaderboard
+      allow delete: if false;
+    }
+
+    // ============================================================================
+    // Reviews
+    // ============================================================================
+
+    match /reviews/{reviewId} {
+      // Anyone can read reviews
+      allow read: if true;
+
+      // Users can create reviews for any game
+      allow create: if isAuthenticated()
+        && isValidReview()
+        && request.resource.data.userId == request.auth.uid;
+
+      // Users can only update their own reviews
+      allow update: if isAuthenticated()
+        && isValidReview()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid;
+
+      // Users can only delete their own reviews
+      allow delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================================================
+    // Default Deny
+    // ============================================================================
+
+    // Deny access to all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

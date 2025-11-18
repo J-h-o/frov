@@ -3,6 +3,7 @@ export interface User {
   id: string
   username: string
   avatar: string
+  email?: string
   createdAt: string
   stats: GameStats[]
   savedGames: string[]
@@ -38,6 +39,7 @@ export interface Review {
   id: string
   userId: string
   username: string
+  avatar: string
   gameId: string
   rating: number
   comment: string
