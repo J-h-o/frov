@@ -12,6 +12,10 @@ import { PongGame } from '@games/pong/PongGame'
 import { Connect4Game } from '@games/connect4/Connect4Game'
 import { TetrisGame } from '@games/tetris/TetrisGame'
 import { FireboyWatergirlGame } from '@games/fireboy-watergirl/FireboyWatergirlGame'
+import { SolitaireGame } from '@games/solitaire/SolitaireGame'
+import { BattleshipsGame } from '@games/battleships/BattleshipsGame'
+import { SpiderSolitaireGame } from '@games/spider-solitaire/SpiderSolitaireGame'
+import { HillClimbGame } from '@games/hill-climb-racing/HillClimbGame'
 
 export const GamePage = () => {
   const { gameId } = useParams<{ gameId: string }>()
@@ -49,13 +53,13 @@ export const GamePage = () => {
       case 'connect4':
         return <Connect4Game />
       case 'battleships':
-        return <div className="text-center py-20">Battleships - Coming Soon!</div>
+        return <BattleshipsGame />
       case 'solitaire':
-        return <div className="text-center py-20">Solitaire - Coming Soon!</div>
+        return <SolitaireGame />
       case 'spider-solitaire':
-        return <div className="text-center py-20">Spider Solitaire - Coming Soon!</div>
+        return <SpiderSolitaireGame />
       case 'hill-climb-racing':
-        return <div className="text-center py-20">Hill Climb Racing - Coming Soon!</div>
+        return <HillClimbGame />
       case 'tetris':
         return <TetrisGame />
       case 'fireboy-watergirl':
